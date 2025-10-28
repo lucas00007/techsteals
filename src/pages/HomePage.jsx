@@ -58,7 +58,9 @@ const HomePage = () => {
     <div>
       {/* Hero Section */}
       <section style={{
-        background: 'linear-gradient(45deg, #2563eb, #7c3aed)',
+        background: 'linear-gradient(225deg, #2563eb, #7c3aed, #ec4899, #2563eb)',
+        backgroundSize: '300% 300%',
+        animation: 'gradientShift 15s ease-in-out infinite',
         height: isMobile ? '350px' : '500px',
         display: 'flex',
         alignItems: 'center',
