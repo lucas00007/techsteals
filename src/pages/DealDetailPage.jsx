@@ -1,11 +1,20 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import mockDeals from '../data/mockDeals';
+import { useDeal } from '../hooks/useDeals';
 
 const DealDetailPage = () => {
   const { id } = useParams();
-  const deal = mockDeals.find(d => d.id === parseInt(id));
+  const { deal, loading } = useDeal(id);
   
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🔄</div>
+        <p>Loading deal details...</p>
+      </div>
+    );
+  }
+
   if (!deal) {
     return (
       <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>

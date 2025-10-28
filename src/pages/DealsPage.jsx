@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import DealGrid from '../components/deals/DealGrid';
-import mockDeals from '../data/mockDeals';
+import { useDeals } from '../hooks/useDeals';
 
 const DealsPage = () => {
   const [searchParams] = useSearchParams();
-  const [filteredDeals, setFilteredDeals] = useState(mockDeals);
+  const { deals, loading } = useDeals();
+  const [filteredDeals, setFilteredDeals] = useState([]);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [sortBy, setSortBy] = useState('discount');
@@ -22,18 +23,18 @@ const DealsPage = () => {
   }, [searchParams, searchQuery, selectedCategory]);
 
   useEffect(() => {
-    let deals = [...mockDeals];
+    let filteredData = [...deals];
 
     // Filter by category
     if (selectedCategory !== 'all') {
-      deals = deals.filter(deal => 
+      filteredData = filteredData.filter(deal => 
         deal.category.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
 
     // Filter by search query
     if (searchQuery) {
-      deals = deals.filter(deal =>
+      filteredData = filteredData.filter(deal =>
         deal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         deal.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         deal.store.toLowerCase().includes(searchQuery.toLowerCase())
@@ -41,7 +42,7 @@ const DealsPage = () => {
     }
 
     // Sort deals
-    deals.sort((a, b) => {
+    filteredData.sort((a, b) => {
       switch (sortBy) {
         case 'discount':
           return b.discount - a.discount;
@@ -54,8 +55,8 @@ const DealsPage = () => {
       }
     });
 
-    setFilteredDeals(deals);
-  }, [selectedCategory, searchQuery, sortBy]);
+    setFilteredDeals(filteredData);
+  }, [deals, selectedCategory, searchQuery, sortBy]);
 
   const isMobile = window.innerWidth < 768;
 
@@ -152,7 +153,12 @@ const DealsPage = () => {
       </div>
 
       {/* Results */}
-      {filteredDeals.length > 0 ? (
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🔄</div>
+          <p>Loading fresh deals...</p>
+        </div>
+      ) : filteredDeals.length > 0 ? (
         <DealGrid deals={filteredDeals} />
       ) : (
         <div style={{

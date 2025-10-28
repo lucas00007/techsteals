@@ -1,28 +1,30 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import DealGrid from '../components/deals/DealGrid';
-import mockDeals from '../data/mockDeals';
+import { useDeals } from '../hooks/useDeals';
+import ApiService from '../services/api';
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [email, setEmail] = useState('');
+  const { deals, loading } = useDeals();
 
   // Calculate stats
-  const hotDeals = mockDeals.filter(deal => deal.discount >= 40);
-  const averageDiscount = Math.round(mockDeals.reduce((sum, deal) => sum + deal.discount, 0) / mockDeals.length);
-  const activeCoupons = mockDeals.filter(deal => deal.couponCode).length;
+  const hotDeals = deals.filter(deal => deal.discount >= 40);
+  const averageDiscount = deals.length > 0 ? Math.round(deals.reduce((sum, deal) => sum + deal.discount, 0) / deals.length) : 0;
+  const activeCoupons = deals.filter(deal => deal.couponCode).length;
 
   // Get top 8 deals by discount
-  const featuredDeals = [...mockDeals].sort((a, b) => b.discount - a.discount).slice(0, 8);
+  const featuredDeals = [...deals].sort((a, b) => b.discount - a.discount).slice(0, 8);
 
   // Category data
   const categories = [
-    { name: 'Chargers', emoji: '⚡', count: mockDeals.filter(d => d.category === 'Chargers').length },
-    { name: 'Cables', emoji: '🔌', count: mockDeals.filter(d => d.category === 'Cables').length },
-    { name: 'Cases', emoji: '📱', count: mockDeals.filter(d => d.category === 'Cases').length },
-    { name: 'Power Banks', emoji: '🔋', count: mockDeals.filter(d => d.category === 'Power Banks').length },
-    { name: 'Headphones', emoji: '🎧', count: mockDeals.filter(d => d.category === 'Headphones').length },
-    { name: 'Accessories', emoji: '🎁', count: mockDeals.filter(d => d.category === 'Accessories').length }
+    { name: 'Chargers', emoji: '⚡', count: deals.filter(d => d.category === 'Chargers').length },
+    { name: 'Cables', emoji: '🔌', count: deals.filter(d => d.category === 'Cables').length },
+    { name: 'Cases', emoji: '📱', count: deals.filter(d => d.category === 'Cases').length },
+    { name: 'Power Banks', emoji: '🔋', count: deals.filter(d => d.category === 'Power Banks').length },
+    { name: 'Headphones', emoji: '🎧', count: deals.filter(d => d.category === 'Headphones').length },
+    { name: 'Accessories', emoji: '🎁', count: deals.filter(d => d.category === 'Accessories').length }
   ];
 
   const navigate = useNavigate();
@@ -36,12 +38,17 @@ const HomePage = () => {
     }
   };
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     if (email) {
-      localStorage.setItem('subscribedEmail', email);
-      alert('Thank you for subscribing!');
-      setEmail('');
+      const success = await ApiService.subscribeToNewsletter(email);
+      if (success) {
+        localStorage.setItem('subscribedEmail', email);
+        alert('Thank you for subscribing!');
+        setEmail('');
+      } else {
+        alert('Subscription failed. Please try again.');
+      }
     }
   };
 
