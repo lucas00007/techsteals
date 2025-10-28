@@ -1,0 +1,82 @@
+const mockDeals = [
+  {
+    id: 1,
+    title: "Anker PowerCore 10000 Portable Charger",
+    category: "Power Banks",
+    originalPrice: 29.99,
+    salePrice: 19.99,
+    discount: 33,
+    store: "Amazon",
+    couponCode: "ANKER33",
+    affiliateLink: "https://amazon.com/anker-powercore",
+    imageUrl: "https://images.unsplash.com/photo-1609592806596-4d8b5b3c8f5e?w=400&h=300&fit=crop",
+    expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: 2,
+    title: "USB-C to Lightning Cable 6ft",
+    category: "Cables",
+    originalPrice: 24.99,
+    salePrice: 12.99,
+    discount: 48,
+    store: "Best Buy",
+    couponCode: null,
+    affiliateLink: "https://bestbuy.com/usb-c-lightning",
+    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+    expiresAt: null
+  },
+  {
+    id: 3,
+    title: "Wireless Charging Pad 15W Fast Charge",
+    category: "Chargers",
+    originalPrice: 39.99,
+    salePrice: 24.99,
+    discount: 38,
+    store: "Walmart",
+    couponCode: "WIRELESS15",
+    affiliateLink: "https://walmart.com/wireless-charger",
+    imageUrl: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop",
+    expiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: 4,
+    title: "iPhone 14 Pro Max Clear Case with MagSafe",
+    category: "Cases",
+    originalPrice: 49.99,
+    salePrice: 29.99,
+    discount: 40,
+    store: "Target",
+    couponCode: null,
+    affiliateLink: "https://target.com/iphone-case",
+    imageUrl: "https://images.unsplash.com/photo-1601593346740-925612772716?w=400&h=300&fit=crop",
+    expiresAt: null
+  },
+  {
+    id: 5,
+    title: "Sony WH-1000XM4 Noise Canceling Headphones",
+    category: "Headphones",
+    originalPrice: 349.99,
+    salePrice: 199.99,
+    discount: 43,
+    store: "Amazon",
+    couponCode: "SONY43OFF",
+    affiliateLink: "https://amazon.com/sony-headphones",
+    imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
+    expiresAt: new Date(Date.now() + 18 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: 6,
+    title: "Multi-Port USB Hub 7-in-1",
+    category: "Accessories",
+    originalPrice: 59.99,
+    salePrice: 34.99,
+    discount: 42,
+    store: "Best Buy",
+    couponCode: "HUB7IN1",
+    affiliateLink: "https://bestbuy.com/usb-hub",
+    imageUrl: "https://images.unsplash.com/photo-1625842268584-8f3296236761?w=400&h=300&fit=crop",
+    expiresAt: null
+  }
+];
+
+export default mockDeals;
