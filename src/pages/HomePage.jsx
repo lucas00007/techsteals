@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Header from '../components/layout/Header';
+import { Link, useNavigate } from 'react-router-dom';
 import DealGrid from '../components/deals/DealGrid';
 import mockDeals from '../data/mockDeals';
 
@@ -26,10 +25,15 @@ const HomePage = () => {
     { name: 'Accessories', emoji: '🎁', count: mockDeals.filter(d => d.category === 'Accessories').length }
   ];
 
+  const navigate = useNavigate();
+
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log('Search query:', searchQuery);
-    // Filter deals logic would go here
+    if (searchQuery.trim()) {
+      navigate(`/deals?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate('/deals');
+    }
   };
 
   const handleEmailSubmit = (e) => {
@@ -44,10 +48,7 @@ const HomePage = () => {
   const isMobile = window.innerWidth < 768;
 
   return (
-    <Router>
-      <div>
-        <Header />
-        <div style={{ paddingTop: '64px' }}>
+    <div>
       {/* Hero Section */}
       <section style={{
         background: 'linear-gradient(45deg, #2563eb, #7c3aed)',
@@ -122,32 +123,38 @@ const HomePage = () => {
             gap: '1rem',
             justifyContent: 'center'
           }}>
-            {['⚡ Chargers', '🔌 Cables', '📱 Cases', '🔋 Power Banks', '🎧 Headphones'].map((pill) => (
-              <button
-                key={pill}
+            {[
+              { emoji: '⚡', name: 'Chargers', category: 'chargers' },
+              { emoji: '🔌', name: 'Cables', category: 'cables' },
+              { emoji: '📱', name: 'Cases', category: 'cases' },
+              { emoji: '🔋', name: 'Power Banks', category: 'power banks' },
+              { emoji: '🎧', name: 'Headphones', category: 'headphones' }
+            ].map((item) => (
+              <Link
+                key={item.category}
+                to={`/deals?category=${item.category}`}
                 style={{
                   background: 'rgba(255, 255, 255, 0.2)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '9999px',
                   padding: '0.5rem 1.5rem',
-                  cursor: 'pointer',
+                  textDecoration: 'none',
                   transition: 'all 0.3s ease',
-                  fontSize: '0.875rem'
+                  fontSize: '0.875rem',
+                  display: 'inline-block'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.background = 'white';
-                  e.target.style.background = 'linear-gradient(to right, #2563eb, #7c3aed)';
-                  e.target.style.webkitBackgroundClip = 'text';
-                  e.target.style.webkitTextFillColor = 'transparent';
+                  e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                  e.target.style.color = '#2563eb';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.target.style.webkitTextFillColor = 'white';
+                  e.target.style.color = 'white';
                 }}
               >
-                {pill}
-              </button>
+                {item.emoji} {item.name}
+              </Link>
             ))}
           </div>
         </div>
@@ -200,16 +207,16 @@ const HomePage = () => {
         <DealGrid deals={featuredDeals} />
         
         <div style={{ textAlign: 'center', marginTop: '3rem' }}>
-          <button
+          <Link
+            to="/deals"
             style={{
               display: 'inline-block',
               background: 'linear-gradient(to right, #2563eb, #7c3aed)',
               color: 'white',
-              border: 'none',
+              textDecoration: 'none',
               fontWeight: 'bold',
               padding: '1rem 3rem',
               borderRadius: '8px',
-              cursor: 'pointer',
               transition: 'all 0.3s ease',
               fontSize: '1rem'
             }}
@@ -223,7 +230,7 @@ const HomePage = () => {
             }}
           >
             View All Deals
-          </button>
+          </Link>
         </div>
       </section>
 
@@ -250,8 +257,9 @@ const HomePage = () => {
           margin: '0 auto'
         }}>
           {categories.map((category) => (
-            <button
+            <Link
               key={category.name}
+              to={`/deals?category=${category.name.toLowerCase()}`}
               style={{
                 display: 'block',
                 background: 'white',
@@ -259,15 +267,14 @@ const HomePage = () => {
                 padding: '2rem',
                 textAlign: 'center',
                 color: 'inherit',
+                textDecoration: 'none',
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.3s ease',
                 border: '2px solid transparent',
-                cursor: 'pointer',
                 width: '100%'
               }}
               onMouseEnter={(e) => {
-                e.target.style.border = '2px solid';
-                e.target.style.borderImage = 'linear-gradient(to right, #2563eb, #7c3aed) 1';
+                e.target.style.border = '2px solid #2563eb';
                 e.target.style.boxShadow = '0 8px 12px rgba(0, 0, 0, 0.15)';
                 e.target.style.transform = 'translateY(-2px)';
               }}
@@ -284,7 +291,7 @@ const HomePage = () => {
               <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
                 {category.count} deals
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       </section>
@@ -478,9 +485,7 @@ const HomePage = () => {
           </div>
         </div>
         </footer>
-        </div>
-      </div>
-    </Router>
+    </div>
   );
 };
 

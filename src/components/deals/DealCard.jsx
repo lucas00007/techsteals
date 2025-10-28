@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const DealCard = ({ deal }) => {
   const [showCopied, setShowCopied] = useState(false);
 
   const {
+    id,
     title,
     originalPrice,
-    salePrice,
+    currentPrice,
     discount,
     store,
     couponCode,
-    affiliateLink,
-    imageUrl,
-    expiresAt
+    link,
+    image,
+    rating
   } = deal;
 
   const copyToClipboard = (text) => {
@@ -21,15 +23,7 @@ const DealCard = ({ deal }) => {
     setTimeout(() => setShowCopied(false), 2000);
   };
 
-  const getTimeUntilExpiry = () => {
-    if (!expiresAt) return null;
-    const now = new Date();
-    const expiry = new Date(expiresAt);
-    const hoursLeft = Math.ceil((expiry - now) / (1000 * 60 * 60));
-    return hoursLeft <= 24 ? hoursLeft : null;
-  };
 
-  const hoursLeft = getTimeUntilExpiry();
 
   return (
     <div style={{
@@ -61,7 +55,7 @@ const DealCard = ({ deal }) => {
         overflow: 'hidden'
       }}>
         <img
-          src={imageUrl}
+          src={image}
           alt={title}
           style={{
             width: '100%',
@@ -133,7 +127,7 @@ const DealCard = ({ deal }) => {
           fontWeight: 'bold',
           color: '#16a34a'
         }}>
-          ${salePrice}
+          ${currentPrice}
         </span>
       </div>
 
@@ -180,44 +174,71 @@ const DealCard = ({ deal }) => {
         </div>
       )}
 
-      {/* Expiration Warning */}
-      {hoursLeft && hoursLeft <= 24 && (
-        <div style={{
-          color: '#ef4444',
-          fontSize: '0.875rem',
-          marginBottom: '1rem',
-          fontWeight: '500'
-        }}>
-          ⏰ Expires in {hoursLeft} hours!
+      {/* Rating */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        marginBottom: '1rem'
+      }}>
+        <div style={{ color: '#fbbf24', fontSize: '1rem' }}>
+          {'★'.repeat(Math.floor(rating))}{'☆'.repeat(5 - Math.floor(rating))}
         </div>
-      )}
+        <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>({rating})</span>
+      </div>
 
-      {/* Get Deal Button */}
-      <button
-        onClick={() => window.open(affiliateLink, '_blank')}
-        style={{
-          width: '100%',
-          background: 'linear-gradient(to right, #2563eb, #7c3aed)',
-          color: 'white',
-          fontWeight: 'bold',
-          fontSize: '1rem',
-          padding: '0.75rem 1rem',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = 'linear-gradient(to right, #3b82f6, #8b5cf6)';
-          e.target.style.transform = 'translateY(-1px)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = 'linear-gradient(to right, #2563eb, #7c3aed)';
-          e.target.style.transform = 'translateY(0)';
-        }}
-      >
-        Get Deal
-      </button>
+      {/* Action Buttons */}
+      <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <Link
+          to={`/deal/${id}`}
+          style={{
+            flex: 1,
+            background: 'white',
+            color: '#2563eb',
+            border: '2px solid #2563eb',
+            fontWeight: 'bold',
+            fontSize: '0.875rem',
+            padding: '0.75rem 1rem',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            textAlign: 'center',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = '#2563eb';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'white';
+            e.target.style.color = '#2563eb';
+          }}
+        >
+          View Deal
+        </Link>
+        <button
+          onClick={() => window.open(link, '_blank')}
+          style={{
+            flex: 1,
+            background: 'linear-gradient(to right, #2563eb, #7c3aed)',
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '0.875rem',
+            padding: '0.75rem 1rem',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'linear-gradient(to right, #3b82f6, #8b5cf6)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'linear-gradient(to right, #2563eb, #7c3aed)';
+          }}
+        >
+          Get Deal
+        </button>
+      </div>
 
       {/* Copy Toast Notification */}
       {showCopied && (
