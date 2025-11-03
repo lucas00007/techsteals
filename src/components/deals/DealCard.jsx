@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 const DealCard = ({ deal }) => {
   const [showCopied, setShowCopied] = useState(false);
+  const navigate = useNavigate();
 
   const {
     id,
@@ -36,6 +38,7 @@ const DealCard = ({ deal }) => {
       transition: 'box-shadow 0.3s ease, transform 0.3s ease',
       cursor: 'pointer'
     }}
+    onClick={() => navigate(`/deal/${deal.id}`)}
     onMouseEnter={(e) => {
       e.currentTarget.style.boxShadow = '0 8px 12px rgba(0, 0, 0, 0.15)';
       e.currentTarget.style.transform = 'translateY(-2px)';
@@ -154,7 +157,10 @@ const DealCard = ({ deal }) => {
             Code: {couponCode}
           </span>
           <button
-            onClick={() => copyToClipboard(couponCode)}
+            onClick={(e) => {
+              e.stopPropagation();
+              copyToClipboard(couponCode);
+            }}
             style={{
               background: 'linear-gradient(to right, #2563eb, #7c3aed)',
               color: 'white',
@@ -216,7 +222,10 @@ const DealCard = ({ deal }) => {
           View Deal
         </Link>
         <button
-          onClick={() => window.open(link, '_blank')}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(link, '_blank');
+          }}
           style={{
             flex: 1,
             background: 'linear-gradient(to right, #2563eb, #7c3aed)',
