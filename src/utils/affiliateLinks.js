@@ -1,5 +1,5 @@
 // Amazon Associates Configuration
-const ASSOCIATE_ID = process.env.REACT_APP_AMAZON_ASSOCIATE_ID || 'techsteals-20';
+const ASSOCIATE_ID = process.env.REACT_APP_AMAZON_ASSOCIATE_ID || 'techsteals20-20';
 
 // Generate Amazon affiliate link
 export const generateAmazonLink = (productUrl, associateId = ASSOCIATE_ID) => {
