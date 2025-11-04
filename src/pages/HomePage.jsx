@@ -487,9 +487,17 @@ const HomePage = () => {
           }}>
             <p style={{
               color: '#9ca3af',
+              fontSize: '0.875rem',
+              marginBottom: '0.5rem'
+            }}>
+              As an Amazon Associate I earn from qualifying purchases.
+            </p>
+            <p style={{
+              color: '#9ca3af',
               fontSize: '0.875rem'
             }}>
-              © 2024 TechSteals. All rights reserved.
+              © 2024 TechSteals. All rights reserved. | 
+              <Link to="/privacy" style={{ color: '#9ca3af', textDecoration: 'underline' }}>Privacy Policy</Link>
             </p>
           </div>
         </div>

@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import DealsPage from './pages/DealsPage';
 import DealDetailPage from './pages/DealDetailPage';
 import AboutPage from './pages/AboutPage';
+import PrivacyPage from './pages/PrivacyPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/deals" element={<DealsPage />} />
             <Route path="/deal/:id" element={<DealDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
           </Routes>
         </div>
       </div>
