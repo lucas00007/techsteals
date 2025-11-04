@@ -1,0 +1,100 @@
+{
+  "name": "TechSteals Deal Scraper",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.amazon.com/s?k=phone+charger&rh=n%3A2335752011",
+        "options": {
+          "headers": {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+          }
+        }
+      },
+      "id": "amazon-scraper",
+      "name": "Scrape Amazon",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [460, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const deals = [];\nfor (let i = 0; i < 5; i++) {\n  deals.push({\n    id: Date.now() + i,\n    title: `USB-C Fast Charger ${i + 1}`,\n    originalPrice: 29.99 + (i * 5),\n    currentPrice: 19.99 + (i * 3),\n    salePrice: 19.99 + (i * 3),\n    discount: 30 + (i * 2),\n    store: 'Amazon',\n    category: 'Chargers',\n    imageUrl: 'https://images.unsplash.com/photo-1609592806596-4d8b5b3c8f5e?w=400',\n    image: 'https://images.unsplash.com/photo-1609592806596-4d8b5b3c8f5e?w=400',\n    link: 'https://amazon.com/product-' + i,\n    affiliateLink: 'https://amazon.com/product-' + i,\n    rating: 4.2 + (i * 0.1),\n    couponCode: i % 2 === 0 ? 'SAVE' + (30 + i * 2) : null,\n    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()\n  });\n}\nreturn deals.map(deal => ({ json: deal }));"
+      },
+      "id": "amazon-parser",
+      "name": "Parse Amazon Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://your-api-server.herokuapp.com/api/deals",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $input.all().map(item => item.json) }}",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      },
+      "id": "update-api",
+      "name": "Update API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [900, 200]
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [
+          {
+            "node": "Scrape Amazon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Amazon": {
+      "main": [
+        [
+          {
+            "node": "Parse Amazon Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Amazon Data": {
+      "main": [
+        [
+          {
+            "node": "Update API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
