@@ -7,7 +7,7 @@ import ApiService from '../services/api';
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [email, setEmail] = useState('');
-  const { deals, loading } = useDeals();
+  const { deals } = useDeals();
 
   // Calculate stats
   const hotDeals = deals.filter(deal => deal.discount >= 40);
