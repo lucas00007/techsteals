@@ -134,6 +134,18 @@ const Header = () => {
           )}
         </div>
 
+        <Link to="/favorites" style={{
+          color: 'white',
+          textDecoration: 'none',
+          transition: 'opacity 0.3s ease',
+          borderBottom: isActive('/favorites') ? '2px solid white' : 'none',
+          paddingBottom: '2px'
+        }}
+        onMouseEnter={(e) => e.target.style.opacity = '0.8'}
+        onMouseLeave={(e) => e.target.style.opacity = '1'}>
+          ❤️ Favorites
+        </Link>
+
         <Link to="/about" style={{
           color: 'white',
           textDecoration: 'none',
@@ -289,6 +301,20 @@ const Header = () => {
                 </Link>
               ))}
             </div>
+
+            <Link
+              to="/favorites"
+              onClick={toggleMobileMenu}
+              style={{
+                color: 'white',
+                textDecoration: 'none',
+                fontSize: '1.2rem',
+                padding: '1rem 0',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+              }}
+            >
+              ❤️ Favorites
+            </Link>
 
             <Link
               to="/about"

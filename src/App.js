@@ -5,8 +5,12 @@ import HomePage from './pages/HomePage';
 import DealsPage from './pages/DealsPage';
 import DealDetailPage from './pages/DealDetailPage';
 import AboutPage from './pages/AboutPage';
+import FavoritesPage from './pages/FavoritesPage';
+import { useToast } from './components/ui/Toast';
 
 function App() {
+  const { ToastContainer } = useToast();
+
   return (
     <Router>
       <div>
@@ -17,8 +21,10 @@ function App() {
             <Route path="/deals" element={<DealsPage />} />
             <Route path="/deal/:id" element={<DealDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
           </Routes>
         </div>
+        <ToastContainer />
       </div>
     </Router>
   );

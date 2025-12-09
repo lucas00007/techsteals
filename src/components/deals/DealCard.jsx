@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useFavorites } from '../../hooks/useFavorites';
+import { useToast } from '../ui/Toast';
+import ShareButton from '../ui/ShareButton';
+import CountdownTimer from '../ui/CountdownTimer';
+import analytics from '../../utils/analytics';
 
 const DealCard = ({ deal }) => {
   const [showCopied, setShowCopied] = useState(false);
   const navigate = useNavigate();
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const { showToast } = useToast();
 
   const {
     id,
@@ -23,6 +29,21 @@ const DealCard = ({ deal }) => {
     navigator.clipboard.writeText(text);
     setShowCopied(true);
     setTimeout(() => setShowCopied(false), 2000);
+    showToast('Coupon code copied!', 'success');
+  };
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    const added = toggleFavorite(deal);
+    showToast(
+      added ? 'Added to favorites!' : 'Removed from favorites!',
+      added ? 'success' : 'info'
+    );
+    analytics.trackFavoriteToggle(deal, added ? 'add' : 'remove');
+  };
+
+  const handleDealClick = () => {
+    analytics.trackDealClick(deal);
   };
 
 
@@ -82,6 +103,31 @@ const DealCard = ({ deal }) => {
         }}>
           -{discount}%
         </div>
+
+        {/* Favorite Button */}
+        <button
+          onClick={handleFavoriteClick}
+          style={{
+            position: 'absolute',
+            top: '8px',
+            left: '8px',
+            background: 'rgba(255, 255, 255, 0.9)',
+            border: 'none',
+            borderRadius: '50%',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontSize: '1.2rem',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => e.target.style.transform = 'scale(1.1)'}
+          onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+        >
+          {isFavorite(deal.id) ? '❤️' : '🤍'}
+        </button>
       </div>
 
       {/* Product Title */}
@@ -193,10 +239,18 @@ const DealCard = ({ deal }) => {
         <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>({rating})</span>
       </div>
 
+      {/* Countdown Timer */}
+      {deal.expiresAt && (
+        <div style={{ marginBottom: '1rem' }}>
+          <CountdownTimer expiresAt={deal.expiresAt} />
+        </div>
+      )}
+
       {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
         <Link
           to={`/deal/${id}`}
+          onClick={(e) => e.stopPropagation()}
           style={{
             flex: 1,
             background: 'white',
@@ -224,6 +278,7 @@ const DealCard = ({ deal }) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
+            handleDealClick();
             window.open(link, '_blank');
           }}
           style={{
@@ -247,6 +302,11 @@ const DealCard = ({ deal }) => {
         >
           Get Deal
         </button>
+      </div>
+
+      {/* Share Button */}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <ShareButton deal={deal} />
       </div>
 
       {/* Copy Toast Notification */}
